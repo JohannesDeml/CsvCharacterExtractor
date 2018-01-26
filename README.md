@@ -1,6 +1,6 @@
 # CSV Character Extractor
 
-![Csv Character Extractor workflow and functionality](https://i.imgur.com/Q2bLbVf.gif)
+![Csv Character Extractor workflow and functionality](https://i.imgur.com/4xgNbWc.gif)
 
 This is a small tool to find all unique characters of a csv. The collected information can be used in order to know which specific characters of a language need to be supported.
 This tool was developed to create font assets for textmesh pro with just the characters you need. This is especially useful for languages like korean, japanese or chinese.
