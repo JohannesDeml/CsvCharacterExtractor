@@ -1,0 +1,134 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CsvUniqueCharacterProcessor.java" company="Supyrb">
+//   Copyright (c) 2018 Supyrb. All rights reserved.
+// </copyright>
+// <author>
+//   Johannes Deml
+//   send@johannesdeml.com
+// </author>
+// --------------------------------------------------------------------------------------------------------------------
+
+import com.univocity.parsers.common.processor.ColumnProcessor;
+import com.univocity.parsers.csv.CsvParser;
+import com.univocity.parsers.csv.CsvParserSettings;
+
+import java.io.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+public class CsvUniqueCharacterProcessor {
+
+    private final String emojiRegex = "([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee])";
+
+    public void runProcess() {
+        CsvParserSettings parserSettings = new CsvParserSettings();
+        parserSettings.getFormat().setLineSeparator("\n");
+        parserSettings.setHeaderExtractionEnabled(true);
+
+        // To get the values of all columns, use a column processor
+        ColumnProcessor rowProcessor = new ColumnProcessor();
+        parserSettings.setProcessor(rowProcessor);
+
+        CsvParser parser = new CsvParser(parserSettings);
+
+        String relativePathToInputCsv = "./in/table.csv";
+        // Check for input file
+        if(!checkForInputFile(relativePathToInputCsv)) {
+            System.out.println("Missing input file! The input file needs to be at the relative path " + relativePathToInputCsv);
+            return;
+        }
+
+        //This will kick in our column processor
+        parser.parse(getReader(relativePathToInputCsv));
+
+        //Finally, we can get the column values:
+        Map<String, List<String>> columnValues = rowProcessor.getColumnValuesAsMapOfNames();
+
+        for (Map.Entry<String, List<String>> columnEntry : columnValues.entrySet()) {
+            String columnName = columnEntry.getKey();
+            if(columnName.toLowerCase().equals("id") || columnName.toLowerCase().equals("description")) {
+                continue;
+            }
+            List<String> entries = columnEntry.getValue();
+            System.out.println("Processing column " + columnName);
+            HashSet<Character> uniqueCharacters = getUniqueCharacters(entries);
+            String uniqueCharacterString = getStringRepresentation(uniqueCharacters);
+            System.out.println(columnName + " has " + uniqueCharacterString.length() + " unique characters");
+            writeToFile("./out/"+columnName+".txt", uniqueCharacterString);
+        }
+    }
+
+    private boolean checkForInputFile(String relativePath) {
+        File file = new File(relativePath);
+        file.getParentFile().mkdirs();
+        if(!file.exists()) {
+            return false;
+        }
+        return true;
+    }
+
+    private void writeToFile(String relativePath, String uniqueCharacterString) {
+        PrintWriter out = null;
+        try {
+
+            File file = new File(relativePath);
+            file.getParentFile().mkdirs();
+            if(!file.exists()) {
+                file.createNewFile();
+            }
+            out = new PrintWriter(file, "UTF-8");
+            out.write(uniqueCharacterString);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            if(out != null) {
+                out.close();
+            }
+        }
+    }
+
+    private String getStringRepresentation(HashSet<Character> uniqueCharacters) {
+        StringBuilder builder = new StringBuilder(uniqueCharacters.size());
+        for (Character character: uniqueCharacters) {
+            builder.append(character);
+        }
+        return builder.toString();
+    }
+
+    private HashSet<Character> getUniqueCharacters(List<String> entries) {
+
+        HashSet<Character> uniqueCharacters = new HashSet<Character>();
+        for (String entry : entries) {
+            if(entry == null) {
+                continue;
+            }
+            // Remove emojis
+            entry = entry.replaceAll(emojiRegex, "");
+            // Remove newlines
+            entry = entry.replaceAll("\n", "");
+            char[] characters = entry.toCharArray();
+            for (int i = 0; i<characters.length; i++) {
+                char c = characters[i];
+                uniqueCharacters.add(c);
+            }
+        }
+
+        return uniqueCharacters;
+    }
+
+
+    public Reader getReader(String relativePath) {
+        try {
+            InputStream inputStream = new FileInputStream(relativePath);
+            return new InputStreamReader(inputStream, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
