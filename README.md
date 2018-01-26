@@ -11,3 +11,6 @@ The tool ignores the following chracters:
 
 
 The latest version can be downloaded here: https://github.com/JohannesDeml/CsvCharacterExtractor/releases
+
+## Used libraries
+* https://github.com/uniVocity/univocity-parsers
