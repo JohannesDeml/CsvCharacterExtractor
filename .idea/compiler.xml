@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="CsvCharacterExtractor" />
         <module name="CsvUniqueCharacters" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="CsvCharacterExtractor" target="1.5" />
       <module name="CsvUniqueCharacters" target="1.5" />
     </bytecodeTargetLevel>
   </component>

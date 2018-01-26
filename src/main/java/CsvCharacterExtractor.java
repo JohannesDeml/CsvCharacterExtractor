@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CsvUniqueCharacters.java" company="Supyrb">
+// <copyright file="CsvCharacterExtractor.java" company="Supyrb">
 //   Copyright (c) 2018 Supyrb. All rights reserved.
 // </copyright>
 // <author>
@@ -8,9 +8,9 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
-public class CsvUniqueCharacters {
+public class CsvCharacterExtractor {
     public static void main(String[] args) {
-        System.out.println("Running CsvUniqueCharacters");
+        System.out.println("Running CsvCharacterExtractor");
 
         CsvUniqueCharacterProcessor processor = new CsvUniqueCharacterProcessor();
 

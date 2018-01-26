@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CsvUniqueCharacters.iml" filepath="$PROJECT_DIR$/CsvUniqueCharacters.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CsvCharacterExtractor.iml" filepath="$PROJECT_DIR$/CsvCharacterExtractor.iml" />
     </modules>
   </component>
 </project>
