@@ -21,7 +21,7 @@ public class CsvUniqueCharacterProcessor {
 
     private final String emojiRegex = "([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee])";
 
-    public void runProcess() {
+    public void runProcess(ConfigData config) {
         CsvParserSettings parserSettings = new CsvParserSettings();
         parserSettings.getFormat().setLineSeparator("\n");
         parserSettings.setHeaderExtractionEnabled(true);
@@ -32,7 +32,7 @@ public class CsvUniqueCharacterProcessor {
 
         CsvParser parser = new CsvParser(parserSettings);
 
-        String relativePathToInputCsv = "./in/table.csv";
+        String relativePathToInputCsv = config.getInPath();
         // Check for input file
         if(!checkForInputFile(relativePathToInputCsv)) {
             System.out.println("Missing input file! The input file needs to be at the relative path " + relativePathToInputCsv);
@@ -55,7 +55,7 @@ public class CsvUniqueCharacterProcessor {
             HashSet<Character> uniqueCharacters = getUniqueCharacters(entries);
             String uniqueCharacterString = getStringRepresentation(uniqueCharacters);
             System.out.println(columnName + " has " + uniqueCharacterString.length() + " unique characters");
-            writeToFile("./out/"+columnName+".txt", uniqueCharacterString);
+            writeToFile(config.getOutPath()+columnName+".txt", uniqueCharacterString);
         }
     }
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<in>
+		<path>in/table.csv</path>
+	</in>
+	<out>
+		<path>out/</path>
+	</out>
+</config>
