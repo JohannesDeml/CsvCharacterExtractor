@@ -1,0 +1,4 @@
+ID,Description,en,de,jp,ko,zh-CN,ru
+General.Cancel,"Cancel phrase - No more than 15 characters, for buttons and such",Cancel,Abbrechen,キャンセル,취소,取消,Отмена
+General.Confirm,"Confirm phrase - No more than 15 characters, for buttons and such",Confirm,Bestätigen,決定,확인,确认,Принять
+General.Continue,"Continue Phrase - No more than 15 characters, for buttons and such",Continue,Fortsetzen,続ける,계속,继续,Продолжить игру
