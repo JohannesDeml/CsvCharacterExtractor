@@ -25,6 +25,7 @@ This tool was developed to create font assets for textmesh pro with just the cha
 * Windows: Doubleclick Run.bat
 * Windows, Mac, Linux: Run `java -jar CsvCharacterExtractor.jar` in the terminal
 ### Config usage
+* With the config you can set the in and out path as well as characters that should be always or never included. Take a look at the [example config](config.xml)
 * Paths can be relative, e.g. `in/example.csv`
 * Paths can be absolute, e.g. `C:/Users/UserName/Documents/LanguageCharacterFiles/`
 * Use forward slashes only `/`
@@ -32,8 +33,6 @@ This tool was developed to create font assets for textmesh pro with just the cha
 [Example Spreadsheet](https://docs.google.com/spreadsheets/d/1WmGauAzcCyQu7OcOnFP2Ypx2x9xuJCclpf7p25cFpz0/edit#gid=1088591893)
 
 ## Roadmap
-* Add a file to define all files that should be ignored (e.g. {,})
-* Add a file to define common characters that should always be included in the list (e.g. 0,1,2,3,4,5,6,7,8,9)
 * Document code
 * Add information on how to build the project
 
