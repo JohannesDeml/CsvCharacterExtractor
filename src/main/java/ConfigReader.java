@@ -47,8 +47,8 @@ public class ConfigReader {
             System.out.println("Couldn't find in node in config file, proceeding with default values");
         }
         else {
-            Element inNode = (Element)inNodes.item(0);
-            configData.setInPath(getTextValue(inNode, "path", configData.getInPath()));
+            Element node = (Element)inNodes.item(0);
+            configData.setInPath(getTextValue(node, "path", configData.getInPath()));
         }
 
 
@@ -57,16 +57,26 @@ public class ConfigReader {
             System.out.println("Couldn't find out node in config file, proceeding with default values");
         }
         else {
-            Element outNode = (Element)outNodes.item(0);
-            configData.setOutPath(getTextValue(outNode, "path", configData.getOutPath()));
+            Element node = (Element)outNodes.item(0);
+            configData.setOutPath(getTextValue(node, "path", configData.getOutPath()));
+        }
+
+        NodeList modificationNodes = root.getElementsByTagName("modification");
+        if(modificationNodes == null || modificationNodes.getLength() <= 0) {
+            System.out.println("Couldn't find modification node in config file, proceeding with default values");
+        }
+        else {
+            Element node = (Element)modificationNodes.item(0);
+            configData.setIncludeCharacters(getTextValue(node, "include-characters", configData.getIncludeCharacters()));
+            configData.setExcludeCharacters(getTextValue(node, "exclude-characters", configData.getExcludeCharacters()));
         }
     }
 
-    private String getTextValue(Element rootElement, String tagName, String defaultValue) {
-        if(rootElement == null) {
+    private String getTextValue(Element element, String tagName, String defaultValue) {
+        if(element == null) {
             return defaultValue;
         }
-        NodeList nodes = rootElement.getElementsByTagName(tagName);
+        NodeList nodes = element.getElementsByTagName(tagName);
         if(nodes == null || nodes.getLength() == 0) {
             return defaultValue;
         }

@@ -53,6 +53,7 @@ public class CsvUniqueCharacterProcessor {
             List<String> entries = columnEntry.getValue();
             System.out.println("Processing column " + columnName);
             HashSet<Character> uniqueCharacters = getUniqueCharacters(entries);
+            applyModifications(uniqueCharacters, config);
             String uniqueCharacterString = getStringRepresentation(uniqueCharacters);
             System.out.println(columnName + " has " + uniqueCharacterString.length() + " unique characters");
             writeToFile(config.getOutPath()+columnName+".txt", uniqueCharacterString);
@@ -61,10 +62,10 @@ public class CsvUniqueCharacterProcessor {
 
     private boolean checkForInputFile(String relativePath) {
         File file = new File(relativePath);
-        file.getParentFile().mkdirs();
         if(!file.exists()) {
             return false;
         }
+        file.getParentFile().mkdirs();
         return true;
     }
 
@@ -73,10 +74,10 @@ public class CsvUniqueCharacterProcessor {
         try {
 
             File file = new File(relativePath);
-            file.getParentFile().mkdirs();
             if(!file.exists()) {
                 file.createNewFile();
             }
+            file.getParentFile().mkdirs();
             out = new PrintWriter(file, "UTF-8");
             out.write(uniqueCharacterString);
         }
@@ -121,6 +122,20 @@ public class CsvUniqueCharacterProcessor {
         return uniqueCharacters;
     }
 
+    private void applyModifications(HashSet<Character> uniqueCharacters, ConfigData config) {
+        String includeCharacters = config.getIncludeCharacters();
+        String excludeCharacters= config.getExcludeCharacters();
+
+        for (int i = 0; i< includeCharacters.length(); i++) {
+            char c = includeCharacters.charAt(i);
+            uniqueCharacters.add(c);
+        }
+
+        for (int i = 0; i< excludeCharacters.length(); i++) {
+            char c = excludeCharacters.charAt(i);
+            uniqueCharacters.remove(c);
+        }
+    }
 
     public Reader getReader(String relativePath) {
         try {

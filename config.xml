@@ -6,4 +6,8 @@
 	<out>
 		<path>out/</path>
 	</out>
+	<modification>
+		<include-characters>0123456789+-,.!?- </include-characters>
+		<exclude-characters>{}</exclude-characters>
+	</modification>
 </config>
