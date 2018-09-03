@@ -7,6 +7,7 @@
         <path>out/</path>
     </out>
     <modification>
+        <include-upper-and-lower-case>true</include-upper-and-lower-case>
         <include-characters>0123456789+-,.!?- </include-characters>
         <exclude-characters>{}</exclude-characters>
     </modification>

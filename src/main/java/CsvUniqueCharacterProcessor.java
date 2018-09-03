@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class CsvUniqueCharacterProcessor {
 
-    private final String emojiRegex = "([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee])";
+    private final String emojiRegex = "([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee\\u200d])";
 
     public void runProcess(ConfigData config) {
         CsvParserSettings parserSettings = new CsvParserSettings();
@@ -58,7 +58,7 @@ public class CsvUniqueCharacterProcessor {
             }
             List<String> entries = columnEntry.getValue();
             System.out.println("Processing column " + columnName);
-            HashSet<Character> uniqueCharacters = getUniqueCharacters(entries);
+            HashSet<Character> uniqueCharacters = getUniqueCharacters(entries, config.isIncludeUpperAndLowerCase());
             applyModifications(uniqueCharacters, config);
             String uniqueCharacterString = getStringRepresentation(uniqueCharacters);
             System.out.println(columnName + " has " + uniqueCharacterString.length() + " unique characters");
@@ -128,7 +128,7 @@ public class CsvUniqueCharacterProcessor {
         return builder.toString();
     }
 
-    private HashSet<Character> getUniqueCharacters(List<String> entries) {
+    private HashSet<Character> getUniqueCharacters(List<String> entries, boolean includeUpperAndLowercaseVersion) {
 
         HashSet<Character> uniqueCharacters = new HashSet<Character>();
         for (String entry : entries) {
@@ -142,7 +142,15 @@ public class CsvUniqueCharacterProcessor {
             char[] characters = entry.toCharArray();
             for (int i = 0; i<characters.length; i++) {
                 char c = characters[i];
-                uniqueCharacters.add(c);
+                if(includeUpperAndLowercaseVersion) {
+                    char cUpper = Character.toUpperCase(c);
+                    char cLower = Character.toLowerCase(c);
+                    uniqueCharacters.add(cUpper);
+                    uniqueCharacters.add(cLower);
+                } else {
+                    uniqueCharacters.add(c);
+                }
+
             }
         }
 

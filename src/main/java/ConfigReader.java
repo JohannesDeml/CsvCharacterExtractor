@@ -81,6 +81,8 @@ public class ConfigReader {
         }
         else {
             Element node = (Element)modificationNodes.item(0);
+            String upperLowerCaseString = getTextValue(node, "include-upper-and-lower-case", configData.isIncludeUpperAndLowerCase()?"true":"false");
+            configData.setIncludeUpperAndLowerCase(upperLowerCaseString.equals("true"));
             configData.setIncludeCharacters(getTextValue(node, "include-characters", configData.getIncludeCharacters()));
             configData.setExcludeCharacters(getTextValue(node, "exclude-characters", configData.getExcludeCharacters()));
         }
