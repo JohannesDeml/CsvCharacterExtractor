@@ -19,6 +19,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConfigReader {
 
@@ -82,6 +84,19 @@ public class ConfigReader {
             configData.setIncludeCharacters(getTextValue(node, "include-characters", configData.getIncludeCharacters()));
             configData.setExcludeCharacters(getTextValue(node, "exclude-characters", configData.getExcludeCharacters()));
         }
+
+        NodeList combineNodes = root.getElementsByTagName("combine");
+        if(combineNodes == null || combineNodes.getLength() <= 0) {
+            System.out.println("Couldn't find combine node in config file, proceeding with default values");
+        }
+        else {
+            for (int i = 0; i < combineNodes.getLength(); i++) {
+                Element node = (Element)combineNodes.item(i);
+                String name = getTextValue(node, "name", String.format("combinedValues%d", i));
+                List<String> columns = getTextValues(node, "column");
+                configData.addCombinedOutputTarget(new CombinedOutputData(name, columns));
+            }
+        }
     }
 
     private String getTextValue(Element element, String tagName, String defaultValue) {
@@ -93,5 +108,19 @@ public class ConfigReader {
             return defaultValue;
         }
         return nodes.item(0).getTextContent();
+    }
+
+    private List<String> getTextValues(Element element, String tagName) {
+        List<String> list = new ArrayList<String>();
+        NodeList nodes = element.getElementsByTagName(tagName);
+        if(nodes == null || nodes.getLength() == 0) {
+            return list;
+        }
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            list.add(nodes.item(i).getTextContent());
+        }
+
+        return list;
     }
 }

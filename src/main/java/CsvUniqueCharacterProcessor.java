@@ -15,6 +15,7 @@ import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,9 @@ public class CsvUniqueCharacterProcessor {
         //Finally, we can get the column values:
         Map<String, List<String>> columnValues = rowProcessor.getColumnValuesAsMapOfNames();
 
+        Map<String, HashSet<Character>> uniqueLanguageCharacters = new HashMap<String, HashSet<Character>>();
+
+        // process all languages and extract their unique characters
         for (Map.Entry<String, List<String>> columnEntry : columnValues.entrySet()) {
             String columnName = columnEntry.getKey();
             if(columnName.toLowerCase().equals("id") || columnName.toLowerCase().equals("description")) {
@@ -59,6 +63,27 @@ public class CsvUniqueCharacterProcessor {
             String uniqueCharacterString = getStringRepresentation(uniqueCharacters);
             System.out.println(columnName + " has " + uniqueCharacterString.length() + " unique characters");
             writeToFile(config.getOutPath()+columnName+".txt", uniqueCharacterString);
+            uniqueLanguageCharacters.put(columnName, uniqueCharacters);
+        }
+
+        // process all combination settings
+        for (CombinedOutputData combinedOutputData : config.getCombinedOutputTargets()) {
+            HashSet<Character> uniqueCharacters = new HashSet<Character>();
+            String combinedDataName = combinedOutputData.getName();
+            System.out.println("Processing combined data " + combinedDataName);
+
+            for (String column : combinedOutputData.getColumns()) {
+                if(!uniqueLanguageCharacters.containsKey(column)) {
+                    System.out.println("Missing column " + column + " for combinedColumn " + combinedDataName + " - ignoring column.");
+                    continue;
+                }
+                HashSet<Character> languageCharacters = uniqueLanguageCharacters.get(column);
+                uniqueCharacters.addAll(languageCharacters);
+            }
+
+            String uniqueCharacterString = getStringRepresentation(uniqueCharacters);
+            System.out.println(combinedDataName + " has " + uniqueCharacterString.length() + " unique characters");
+            writeToFile(config.getOutPath()+combinedDataName+".txt", uniqueCharacterString);
         }
     }
 

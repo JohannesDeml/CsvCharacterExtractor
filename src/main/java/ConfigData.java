@@ -17,12 +17,14 @@ public class ConfigData {
     private String outPath;
     private String includeCharacters;
     private String excludeCharacters;
+    private List<CombinedOutputData> combinedOutputTargets;
 
-    public ConfigData(String inPath, String outPath, String includeCharacters, String excludeCharacters) {
+    public ConfigData(String inPath, String outPath, String includeCharacters, String excludeCharacters, List<CombinedOutputData> combinedOutputTargets) {
         this.inPath = inPath;
         this.outPath = outPath;
         this.includeCharacters = includeCharacters;
         this.excludeCharacters = excludeCharacters;
+        this.combinedOutputTargets = combinedOutputTargets;
     }
 
     public String getInPath() {
@@ -56,4 +58,17 @@ public class ConfigData {
     public void setExcludeCharacters(String excludeCharacters) {
         this.excludeCharacters = excludeCharacters;
     }
+
+    public List<CombinedOutputData> getCombinedOutputTargets() {
+        return combinedOutputTargets;
+    }
+
+    public void setCombinedOutputTargets(List<CombinedOutputData> combinedOutputTargets) {
+        this.combinedOutputTargets = combinedOutputTargets;
+    }
+
+    public void addCombinedOutputTarget(CombinedOutputData target) {
+        this.combinedOutputTargets.add(target);
+    }
 }
+
