@@ -1,3 +1,17 @@
+/*
+ * --------------------------------------------------------------------------------------------------------------------
+ * <copyright file="ConfigData.java" company="Supyrb">
+ *   Copyright (c) 2018 Supyrb. All rights reserved.
+ * </copyright>
+ * <author>
+ *   Johannes Deml
+ *   send@johannesdeml.com
+ * </author>
+ * --------------------------------------------------------------------------------------------------------------------
+ */
+
+import java.util.List;
+
 public class ConfigData {
     private String inPath;
     private String outPath;

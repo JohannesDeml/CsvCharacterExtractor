@@ -1,3 +1,15 @@
+/*
+ * --------------------------------------------------------------------------------------------------------------------
+ * <copyright file="ConfigReader.java" company="Supyrb">
+ *   Copyright (c) 2018 Supyrb. All rights reserved.
+ * </copyright>
+ * <author>
+ *   Johannes Deml
+ *   send@johannesdeml.com
+ * </author>
+ * --------------------------------------------------------------------------------------------------------------------
+ */
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

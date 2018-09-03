@@ -1,12 +1,14 @@
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CsvUniqueCharacterProcessor.java" company="Supyrb">
-//   Copyright (c) 2018 Supyrb. All rights reserved.
-// </copyright>
-// <author>
-//   Johannes Deml
-//   send@johannesdeml.com
-// </author>
-// --------------------------------------------------------------------------------------------------------------------
+/*
+ * --------------------------------------------------------------------------------------------------------------------
+ * <copyright file="CsvUniqueCharacterProcessor.java" company="Supyrb">
+ *   Copyright (c) 2018 Supyrb. All rights reserved.
+ * </copyright>
+ * <author>
+ *   Johannes Deml
+ *   send@johannesdeml.com
+ * </author>
+ * --------------------------------------------------------------------------------------------------------------------
+ */
 
 import com.univocity.parsers.common.processor.ColumnProcessor;
 import com.univocity.parsers.csv.CsvParser;

@@ -1,12 +1,14 @@
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CsvCharacterExtractor.java" company="Supyrb">
-//   Copyright (c) 2018 Supyrb. All rights reserved.
-// </copyright>
-// <author>
-//   Johannes Deml
-//   send@johannesdeml.com
-// </author>
-// --------------------------------------------------------------------------------------------------------------------
+/*
+ * --------------------------------------------------------------------------------------------------------------------
+ * <copyright file="CsvCharacterExtractor.java" company="Supyrb">
+ *   Copyright (c) 2018 Supyrb. All rights reserved.
+ * </copyright>
+ * <author>
+ *   Johannes Deml
+ *   send@johannesdeml.com
+ * </author>
+ * --------------------------------------------------------------------------------------------------------------------
+ */
 
 public class CsvCharacterExtractor {
     public static void main(String[] args) {
