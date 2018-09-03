@@ -92,7 +92,6 @@ public class CsvUniqueCharacterProcessor {
         if(!file.exists()) {
             return false;
         }
-        file.getParentFile().mkdirs();
         return true;
     }
 
@@ -101,10 +100,11 @@ public class CsvUniqueCharacterProcessor {
         try {
 
             File file = new File(relativePath);
+            file.getParentFile().mkdirs();
             if(!file.exists()) {
                 file.createNewFile();
             }
-            file.getParentFile().mkdirs();
+
             out = new PrintWriter(file, "UTF-8");
             out.write(uniqueCharacterString);
         }
