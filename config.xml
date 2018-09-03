@@ -10,4 +10,10 @@
 		<include-characters>0123456789+-,.!?- </include-characters>
 		<exclude-characters>{}</exclude-characters>
 	</modification>
+	<combine>
+        <name>default</name>
+        <column>en</column>
+        <column>de</column>
+        <column>ru</column>
+    </combine>
 </config>
