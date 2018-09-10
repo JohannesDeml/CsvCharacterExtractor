@@ -13,6 +13,7 @@
 import com.univocity.parsers.common.processor.ColumnProcessor;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import com.vdurmont.emoji.EmojiParser;
 
 import java.io.*;
 import java.util.HashMap;
@@ -21,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 public class CsvUniqueCharacterProcessor {
-
-    private final String emojiRegex = "([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee\\u200d])";
 
     public void runProcess(ConfigData config) {
         CsvParserSettings parserSettings = new CsvParserSettings();
@@ -136,8 +135,9 @@ public class CsvUniqueCharacterProcessor {
                 continue;
             }
             // Remove emojis
-            entry = entry.replaceAll(emojiRegex, "");
+            entry = EmojiParser.removeAllEmojis(entry);
             // Remove newlines
+            entry = entry.replaceAll("\n\r", "");
             entry = entry.replaceAll("\n", "");
             char[] characters = entry.toCharArray();
             for (int i = 0; i<characters.length; i++) {

@@ -9,12 +9,18 @@
     <version>0.1-SNAPSHOT</version>
 
     <dependencies>
+        <!-- For parsing csv files -->
         <dependency>
             <groupId>com.univocity</groupId>
             <artifactId>univocity-parsers</artifactId>
             <version>2.5.9</version>
             <type>jar</type>
         </dependency>
+        <!-- For filtering emojis out of the string -->
+        <dependency>
+            <groupId>com.vdurmont</groupId>
+            <artifactId>emoji-java</artifactId>
+            <version>4.0.0</version>
+        </dependency>
     </dependencies>
-
 </project>
