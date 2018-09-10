@@ -2,14 +2,15 @@
 
 ![Csv Character Extractor workflow and functionality](https://i.imgur.com/ionpTPp.gif)
 
-This is a small tool to find all unique characters of a csv. The collected information can be used in order to know which specific characters of a language need to be supported.
-This tool was developed to create font assets for textmesh pro with just the characters you need. This is especially useful for languages like korean, japanese or chinese.
+## Functionality
+Extract all unique characters of each column of a csv file, combine and manipulate results and store the results in text files for further usage.  
+This tool was developed to create font assets for TextmeshPro in Unity. Creating textures with just the character you need is essential for languages like Chinese, Japanese or Korean.
 
 ### Input
-* Input file can be dfined in config.xml, default value is "in/example.csv"
+* Input file can be defined in config.xml, default value is "in/example.csv"
 * Languages are defined in columns, first column defines the language name (see [example.csv](in/example.csv))
-* Column ID and Description will be ignored
-* Newline (\n) and all emojis will be ignored
+* Column `ID` and `Description` will be ignored
+* Newline character (\n\r) and all emojis will be ignored
 
 ### Output
 * Text files are created for each language and named "ColumnName.txt". Output path can be defined in config.xml
@@ -38,5 +39,6 @@ This tool was developed to create font assets for textmesh pro with just the cha
 * Document code
 * Add information on how to build the project
 
-## Used libraries
-* https://github.com/uniVocity/univocity-parsers
+## Third Party Libraries
+* https://github.com/uniVocity/univocity-parsers (Apache 2.0 License)
+* https://github.com/vdurmont/emoji-java (MIT License)
