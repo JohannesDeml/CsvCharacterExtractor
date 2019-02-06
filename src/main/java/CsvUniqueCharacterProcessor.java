@@ -27,6 +27,7 @@ public class CsvUniqueCharacterProcessor {
     private ColumnProcessor rowProcessor;
     private CsvParser parser;
     private Map<String, HashSet<Character>> uniqueLanguageCharacters;
+    private HashSet<Character> allUniqueCharacters;
     private ConfigData config;
 
     public CsvUniqueCharacterProcessor() {
@@ -34,13 +35,16 @@ public class CsvUniqueCharacterProcessor {
         rowProcessor = defineProcessorSettings();
         parser = new CsvParser(parserSettings);
         uniqueLanguageCharacters = new HashMap<String, HashSet<Character>>();
+        allUniqueCharacters = new HashSet<Character>();
     }
 
-    public void setConfig(ConfigData config) {
+    public void initialize(ConfigData config) {
         this.config = config;
+        uniqueLanguageCharacters.clear();
+        allUniqueCharacters.clear();
     }
 
-    public void runProcess() {
+    public void run() {
         String pathToInputCsv = config.getInPath();
         // Check for input file
         if(!fileExists(pathToInputCsv)) {
@@ -49,10 +53,16 @@ public class CsvUniqueCharacterProcessor {
         }
 
         parseInputFile(pathToInputCsv);
-        Map<String, List<String>> columnValues = rowProcessor.getColumnValuesAsMapOfNames();
-        uniqueLanguageCharacters.clear();
+        extractUniqueCharacters();
 
-        // process all languages and extract their unique characters
+        storeColumnCharacters();
+        storeAllCharacters();
+        storeCombinationCharacters();
+    }
+
+    private void extractUniqueCharacters() {
+        Map<String, List<String>> columnValues = rowProcessor.getColumnValuesAsMapOfNames();
+
         for (Map.Entry<String, List<String>> columnEntry : columnValues.entrySet()) {
             String columnName = columnEntry.getKey();
             String fileName = generateValidFileName(columnName);
@@ -60,23 +70,38 @@ public class CsvUniqueCharacterProcessor {
                 continue;
             }
             List<String> entries = columnEntry.getValue();
-            System.out.println("Processing column " + fileName);
+            System.out.println("Processing column " + columnName);
             HashSet<Character> uniqueCharacters = getUniqueCharacters(entries);
+            allUniqueCharacters.addAll(uniqueCharacters);
             addIncludeCharacters(uniqueCharacters);
             removeExcludeCharacters(uniqueCharacters);
-            String uniqueCharacterString = getStringRepresentation(uniqueCharacters);
-            System.out.println(fileName + " has " + uniqueCharacterString.length() + " unique characters");
-            writeToFile(config.getOutPath()+fileName+".txt", uniqueCharacterString);
             uniqueLanguageCharacters.put(fileName, uniqueCharacters);
         }
+        addIncludeCharacters(allUniqueCharacters);
+        removeExcludeCharacters(allUniqueCharacters);
+    }
 
-        // process all combination settings
-        for (CombinedOutputData combinedOutputData : config.getCombinedOutputTargets()) {
+    private void storeColumnCharacters() {
+        for (Map.Entry<String, HashSet<Character>>languageCharacters: uniqueLanguageCharacters.entrySet()) {
+            String fileName = languageCharacters.getKey();
+            HashSet<Character> uniqueCharacters = languageCharacters.getValue();
+            storeAsText(fileName, uniqueCharacters);
+        }
+    }
+
+    private void storeAllCharacters() {
+        storeAsText("AllUniqueCharacters", allUniqueCharacters);
+    }
+
+    private void storeCombinationCharacters() {
+        List<CombinedOutputData> combinedOutputTargets = config.getCombinedOutputTargets();
+        for (CombinedOutputData combinedOutputData : combinedOutputTargets) {
             HashSet<Character> uniqueCharacters = new HashSet<Character>();
             String combinedDataName = combinedOutputData.getName();
             System.out.println("Processing combined data " + combinedDataName);
 
-            for (String column : combinedOutputData.getColumns()) {
+            List<String> targetColumns = combinedOutputData.getColumns();
+            for (String column : targetColumns) {
                 if(!uniqueLanguageCharacters.containsKey(column)) {
                     System.out.println("Missing column " + column + " for combinedColumn " + combinedDataName + " - ignoring column.");
                     continue;
@@ -84,11 +109,14 @@ public class CsvUniqueCharacterProcessor {
                 HashSet<Character> languageCharacters = uniqueLanguageCharacters.get(column);
                 uniqueCharacters.addAll(languageCharacters);
             }
-
-            String uniqueCharacterString = getStringRepresentation(uniqueCharacters);
-            System.out.println(combinedDataName + " has " + uniqueCharacterString.length() + " unique characters");
-            writeToFile(config.getOutPath()+combinedDataName+".txt", uniqueCharacterString);
+            storeAsText(combinedDataName, uniqueCharacters);
         }
+    }
+
+    private void storeAsText(String fileName, HashSet<Character> uniqueCharacters) {
+        String uniqueCharacterString = getStringRepresentation(uniqueCharacters);
+        System.out.println(fileName + " has " + uniqueCharacterString.length() + " unique characters");
+        writeToFile(config.getOutPath() + fileName + ".txt", uniqueCharacterString);
     }
 
     private String generateValidFileName(String name) {
