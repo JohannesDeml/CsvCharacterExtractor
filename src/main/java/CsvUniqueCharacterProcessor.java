@@ -23,46 +23,51 @@ import java.util.Map;
 
 public class CsvUniqueCharacterProcessor {
 
-    public void runProcess(ConfigData config) {
-        CsvParserSettings parserSettings = new CsvParserSettings();
-        parserSettings.getFormat().setLineSeparator("\n");
-        parserSettings.setHeaderExtractionEnabled(true);
+    private CsvParserSettings parserSettings;
+    private ColumnProcessor rowProcessor;
+    private CsvParser parser;
+    private Map<String, HashSet<Character>> uniqueLanguageCharacters;
+    private ConfigData config;
 
-        // To get the values of all columns, use a column processor
-        ColumnProcessor rowProcessor = new ColumnProcessor();
-        parserSettings.setProcessor(rowProcessor);
+    public CsvUniqueCharacterProcessor() {
+        parserSettings = defineParserSettings();
+        rowProcessor = defineProcessorSettings();
+        parser = new CsvParser(parserSettings);
+        uniqueLanguageCharacters = new HashMap<String, HashSet<Character>>();
+    }
 
-        CsvParser parser = new CsvParser(parserSettings);
+    public void setConfig(ConfigData config) {
+        this.config = config;
+    }
 
-        String relativePathToInputCsv = config.getInPath();
+    public void runProcess() {
+        String pathToInputCsv = config.getInPath();
         // Check for input file
-        if(!checkForInputFile(relativePathToInputCsv)) {
-            System.out.println("Missing input file! The input file needs to be at the relative path " + relativePathToInputCsv);
+        if(!fileExists(pathToInputCsv)) {
+            System.out.println("Missing input file! The input path set in the config is " + pathToInputCsv);
             return;
         }
 
-        //This will kick in our column processor
-        parser.parse(getReader(relativePathToInputCsv));
-
-        //Finally, we can get the column values:
+        parseInputFile(pathToInputCsv);
         Map<String, List<String>> columnValues = rowProcessor.getColumnValuesAsMapOfNames();
-
-        Map<String, HashSet<Character>> uniqueLanguageCharacters = new HashMap<String, HashSet<Character>>();
+        uniqueLanguageCharacters.clear();
 
         // process all languages and extract their unique characters
         for (Map.Entry<String, List<String>> columnEntry : columnValues.entrySet()) {
             String columnName = columnEntry.getKey();
-            if(columnName.toLowerCase().equals("id") || columnName.toLowerCase().equals("description")) {
+            String fileName = generateValidFileName(columnName);
+            if(ignoreColumn(fileName)) {
                 continue;
             }
             List<String> entries = columnEntry.getValue();
-            System.out.println("Processing column " + columnName);
-            HashSet<Character> uniqueCharacters = getUniqueCharacters(entries, config.isIncludeUpperAndLowerCase());
-            applyModifications(uniqueCharacters, config);
+            System.out.println("Processing column " + fileName);
+            HashSet<Character> uniqueCharacters = getUniqueCharacters(entries);
+            addIncludeCharacters(uniqueCharacters);
+            removeExcludeCharacters(uniqueCharacters);
             String uniqueCharacterString = getStringRepresentation(uniqueCharacters);
-            System.out.println(columnName + " has " + uniqueCharacterString.length() + " unique characters");
-            writeToFile(config.getOutPath()+columnName+".txt", uniqueCharacterString);
-            uniqueLanguageCharacters.put(columnName, uniqueCharacters);
+            System.out.println(fileName + " has " + uniqueCharacterString.length() + " unique characters");
+            writeToFile(config.getOutPath()+fileName+".txt", uniqueCharacterString);
+            uniqueLanguageCharacters.put(fileName, uniqueCharacters);
         }
 
         // process all combination settings
@@ -86,8 +91,33 @@ public class CsvUniqueCharacterProcessor {
         }
     }
 
-    private boolean checkForInputFile(String relativePath) {
-        File file = new File(relativePath);
+    private String generateValidFileName(String name) {
+        return name.replaceAll("[\\\\/:*?\"<>|]", "_");
+    }
+
+    private boolean ignoreColumn(String columnName) {
+        return columnName.toLowerCase().equals("id") || columnName.toLowerCase().equals("description");
+    }
+
+    private void parseInputFile(String pathToInputCsv) {
+        parser.parse(getReader(pathToInputCsv));
+    }
+
+    private CsvParserSettings defineParserSettings() {
+        CsvParserSettings parserSettings = new CsvParserSettings();
+        parserSettings.getFormat().setLineSeparator("\n");
+        parserSettings.setHeaderExtractionEnabled(true);
+        return parserSettings;
+    }
+
+    private ColumnProcessor defineProcessorSettings() {
+        ColumnProcessor rowProcessor = new ColumnProcessor();
+        parserSettings.setProcessor(rowProcessor);
+        return rowProcessor;
+    }
+
+    private boolean fileExists(String path) {
+        File file = new File(path);
         if(!file.exists()) {
             return false;
         }
@@ -127,8 +157,8 @@ public class CsvUniqueCharacterProcessor {
         return builder.toString();
     }
 
-    private HashSet<Character> getUniqueCharacters(List<String> entries, boolean includeUpperAndLowercaseVersion) {
-
+    private HashSet<Character> getUniqueCharacters(List<String> entries) {
+        boolean includeUpperAndLowercaseVersion = config.isIncludeUpperAndLowerCase();
         HashSet<Character> uniqueCharacters = new HashSet<Character>();
         for (String entry : entries) {
             if(entry == null) {
@@ -157,18 +187,21 @@ public class CsvUniqueCharacterProcessor {
         return uniqueCharacters;
     }
 
-    private void applyModifications(HashSet<Character> uniqueCharacters, ConfigData config) {
-        String includeCharacters = config.getIncludeCharacters();
+    private void removeExcludeCharacters(HashSet<Character> uniqueCharacters) {
         String excludeCharacters= config.getExcludeCharacters();
-
-        for (int i = 0; i< includeCharacters.length(); i++) {
-            char c = includeCharacters.charAt(i);
-            uniqueCharacters.add(c);
-        }
 
         for (int i = 0; i< excludeCharacters.length(); i++) {
             char c = excludeCharacters.charAt(i);
             uniqueCharacters.remove(c);
+        }
+    }
+
+    private void addIncludeCharacters(HashSet<Character> uniqueCharacters) {
+        String includeCharacters = config.getIncludeCharacters();
+
+        for (int i = 0; i< includeCharacters.length(); i++) {
+            char c = includeCharacters.charAt(i);
+            uniqueCharacters.add(c);
         }
     }
 

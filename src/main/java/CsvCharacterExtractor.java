@@ -20,7 +20,7 @@ public class CsvCharacterExtractor {
         ConfigReader configReader = new ConfigReader();
         configReader.parseXmlFile("./config.xml", config);
         CsvUniqueCharacterProcessor processor = new CsvUniqueCharacterProcessor();
-
-        processor.runProcess(config);
+        processor.setConfig(config);
+        processor.runProcess();
     }
 }
